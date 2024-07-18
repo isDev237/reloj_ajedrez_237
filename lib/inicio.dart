@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:reloj_ajedrez_inclinado/Untils.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 
 class InicioPage extends StatefulWidget {
@@ -19,14 +20,16 @@ class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateM
   int _whiteTime = 300; // 5 minutos = 300 segundos
   int _blackTime = 300;
   bool _isWhiteTurn = true;
+  bool play = false;
+
 
   void _startTimer() {
-    _timer = Timer.periodic(Duration(milliseconds: 1000), (timer) {
+    _timer = Timer.periodic(Duration(milliseconds: 1100), (timer) {
       setState(() {
         if (_isWhiteTurn) {
-          if (_whiteTime > 0) _whiteTime--;
+          if (_whiteTime > 0 && play) _whiteTime--;
         } else {
-          if (_blackTime > 0) _blackTime--;
+          if (_blackTime > 0 && play) _blackTime--;
         }
       });
     });
@@ -47,30 +50,36 @@ class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateM
   @override
   void initState() {
     super.initState();
+
     accelerometerEvents.listen((AccelerometerEvent event) {
       setState(() {
         _accelY = event.y;
         _handleAccelerometerChange();
       });
     });
+
   }
 
   void _handleAccelerometerChange() {
+
     if (_accelY < 0.9 && _accelY > 0 ) {
       inclinacion = "Centro";
 
-    } else if (_accelY >= 1) {
+    } else if (_accelY >= 1 && play) {
       inclinacion = "Derecha";
 
-    } else if (_accelY <= -1) {
+      if(!_isWhiteTurn) { _switchTurn(); }
+
+
+    } else if (_accelY <= -1 && play) {
       inclinacion = "Izquierda";
+
+      if(_isWhiteTurn) { _switchTurn(); }
 
     }
 
 
   }
-
-
 
   @override
   void dispose() {
@@ -85,6 +94,75 @@ class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateM
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            //interfaz
+
+            Row(
+              children: [
+
+                SizedBox(width: 35,),
+                Container(
+                  child: Untils().textoTiempo(_formatTime(_whiteTime)),
+                ),
+                InkWell(
+                  onLongPress: (){
+
+                    Untils().mensajeToast("El tiempo se ha reiniciado", false);
+
+                    setState(() {
+                      _timer.cancel();
+                      _whiteTime = 300;
+                      _blackTime = 300;
+                      play = false;
+
+
+                    });
+                  },
+                  onTap: (){
+
+                    String msg_toast = "";
+
+                    setState(() {
+                      play = !play;
+                      print(play);
+
+
+
+                      if(play){
+                        msg_toast = "PLAY";
+                        _startTimer();
+
+                      } else {
+                        msg_toast = "PAUSE";
+                        _stopTimer();
+
+                      }
+                    });
+
+                    Untils().mensajeToast(msg_toast, play);
+
+                  },
+                  child: Container(
+                    width: 60,
+                    height: 60,
+                    child: Icon(
+                      play ? Icons.pause_circle_outline : Icons.play_circle_outline,
+                      size: 60,
+                    ),
+                  ),
+                ),
+                Container(
+                  child: Untils().textoTiempo(_formatTime(_blackTime)),
+                ),
+              ],
+            ),
+
+            Text('Inclinación: ${inclinacion}'),
+
+
+
+
+            //este cronometro funciona
+            /*
             Text('Acelerómetro Y: $_accelY'),
             SizedBox(height: 20),
             Text('Inclinación: ${inclinacion}'),
@@ -123,6 +201,8 @@ class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateM
                 ),
               ],
             ),
+            */
+
           ],
         ),
       ),
