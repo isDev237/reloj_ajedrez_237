@@ -13,56 +13,53 @@ class InicioPage extends StatefulWidget {
 }
 
 class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateMixin{
-
-  double _accelX = 0.0;
-  String _orientation = 'Horizontal';
+  //double _accelX = 0.0;
+  double _accelY = 0.0;
+  //double _accelZ = 0.0;
+  //String _orientation = 'Horizontal';
 
   @override
   void initState() {
     super.initState();
     accelerometerEvents.listen((AccelerometerEvent event) {
       setState(() {
-        _accelX = event.x;
-        _orientation = _getOrientation(event.x);
+        //_accelX = event.x;
+        _accelY = event.y;
+        //_accelZ = event.z;
+        //_orientation = _getOrientation(event.x, event.y, event.z);
       });
     });
   }
-  String _getOrientation(double accelX) {
-    if (accelX > 1) {
-      return 'Inclinado a la izquierda';
-    } else if (accelX < -1) {
-      return 'Inclinado a la derecha';
+
+  String _getOrientation(double x, double y, double z) {
+    if (y.abs() < 1 && x.abs() > 1) {
+      if (x > 0) {
+        return 'Inclinado a la izquierda';
+      } else {
+        return 'Inclinado a la derecha';
+      }
     } else {
       return 'Horizontal';
     }
   }
-  @override
-  void dispose() {
-    super.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFFFFFFF),
-      resizeToAvoidBottomInset: true,
-      body: Column(
-        children: [
-          Text("informacion de una page",
-          style: TextStyle(
-            color: Color(0xFF000000)
-          ),),
-
-          Text(
-            'Aceleración en X: $_accelX',
-          ),
-          Text(
-            'Orientación: $_orientation',
-          ),
-
-        ],
-      )
+      appBar: AppBar(
+        title: Text('Detección de Inclinación'),
+      ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            //Text('Acelerómetro X: $_accelX'),
+            Text('Acelerómetro Y: $_accelY'),
+            //Text('Acelerómetro Z: $_accelZ'),
+            //Text('Orientación: $_orientation'),
+          ],
+        ),
+      ),
     );
   }
 }
