@@ -158,51 +158,6 @@ class _InicioPageState extends State<InicioPage> with SingleTickerProviderStateM
 
             Text('Inclinación: ${inclinacion}'),
 
-
-
-
-            //este cronometro funciona
-            /*
-            Text('Acelerómetro Y: $_accelY'),
-            SizedBox(height: 20),
-            Text('Inclinación: ${inclinacion}'),
-
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Text(
-                  'Blanco: ${_formatTime(_whiteTime)}',
-                  style: TextStyle(fontSize: 24),
-                ),
-                SizedBox(height: 20),
-                Text(
-                  'Negro: ${_formatTime(_blackTime)}',
-                  style: TextStyle(fontSize: 24),
-                ),
-                SizedBox(height: 40),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    ElevatedButton(
-                      onPressed: _isWhiteTurn ? _switchTurn : null,
-                      child: Text('Blanco Hecho'),
-                    ),
-                    SizedBox(width: 20),
-                    ElevatedButton(
-                      onPressed: !_isWhiteTurn ? _switchTurn : null,
-                      child: Text('Negro Hecho'),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 20),
-                ElevatedButton(
-                  onPressed: _startTimer,
-                  child: Text('Iniciar Reloj'),
-                ),
-              ],
-            ),
-            */
-
           ],
         ),
       ),
